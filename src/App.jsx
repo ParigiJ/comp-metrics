@@ -24,6 +24,12 @@ function App() {
     }
   };
 
+  const overview = result?.overview;
+  const earnings = result?.earnings;
+  const Name = overview?.Name;
+  const Description = overview?.Description;
+  const OfficialSite = overview?.OfficialSite;
+
   return (
     <div className="p-6 max-w-lg mx-auto">
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
@@ -45,17 +51,30 @@ function App() {
 
       {error && <div className="mt-4 text-red-600">{error}</div>}
 
-      {error && <div className="mt-4 text-red-600">{error}</div>}
-
-      {result && (
+      {overview && earnings && (
         <div className="mt-6 space-y-6">
           <section>
             <h2 className="text-xl font-semibold mb-2">
               Overview for {symbol.toUpperCase()}
             </h2>
-            <pre className="bg-gray-100 p-4 rounded overflow-auto">
-              {JSON.stringify(result.overview, null, 2)}
-            </pre>
+            <p>
+              {OfficialSite ? (
+                <a
+                  href={OfficialSite}
+                  target="_blank"
+                  rel="noopenr noreferrer"
+                  className="text-blue-600 hover:underline"
+                >
+                  {Name}
+                </a>
+              ) : (
+                <span>{Name}</span>
+              )}
+            </p>
+            <p>
+              <strong>Description:</strong> {Description}
+            </p>
+            );
           </section>
 
           <section>
@@ -63,7 +82,7 @@ function App() {
               Earnings for {symbol.toUpperCase()}
             </h2>
             <pre className="bg-gray-100 p-4 rounded overflow-auto">
-              {JSON.stringify(result.earnings, null, 2)}
+              {JSON.stringify(earnings, null, 2)}
             </pre>
           </section>
         </div>
