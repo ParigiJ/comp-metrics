@@ -1,17 +1,19 @@
 import { useState } from "react";
+import Overview from "./Overview";
+import EarningsTable from "./EarningsTable";
+import MessageDialog from "./Components/MessageDialog";
 
 function App() {
   const [symbol, setSymbol] = useState("");
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
+  const [showMsg, setShowMsg] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!symbol.trim()) {
-      alert("Please enter a valid stock name");
-      return;
-    }
-    setError(null);
+    if (!symbol.trim()) return setShowMsg(true);
+
+    setError("");
     setResult(null);
 
     try {
@@ -24,18 +26,12 @@ function App() {
     }
   };
 
-  const overview = result?.overview;
-  const earnings = result?.earnings;
-  const Name = overview?.Name;
-  const Description = overview?.Description;
-  const OfficialSite = overview?.OfficialSite;
-
   return (
     <div className="p-6 max-w-lg mx-auto">
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <input
           type="text"
-          placeholder="Enter stock symbol"
+          placeholder="Search Stocks (e.g., AAPL, MSFT)"
           value={symbol}
           onChange={(e) => setSymbol(e.target.value)}
           className="border p-2 rounded"
@@ -49,42 +45,29 @@ function App() {
         </button>
       </form>
 
-      {error && <div className="mt-4 text-red-600">{error}</div>}
-
-      {overview && earnings && (
-        <div className="mt-6 space-y-6">
-          <section>
-            <h2 className="text-xl font-semibold mb-2">
-              Overview for {symbol.toUpperCase()}
-            </h2>
-            <p>
-              {OfficialSite ? (
-                <a
-                  href={OfficialSite}
-                  target="_blank"
-                  rel="noopenr noreferrer"
-                  className="text-blue-600 hover:underline"
-                >
-                  {Name}
-                </a>
-              ) : (
-                <span>{Name}</span>
-              )}
-            </p>
-            <p>
-              <strong>Description:</strong> {Description}
-            </p>
-            );
-          </section>
-
-          <section>
-            <h2 className="text-xl font-semibold mb-2">
-              Earnings for {symbol.toUpperCase()}
-            </h2>
-            <pre className="bg-gray-100 p-4 rounded overflow-auto">
-              {JSON.stringify(earnings, null, 2)}
-            </pre>
-          </section>
+      <MessageDialog
+        message="Please enter Stock Name before submitting."
+        visible={showMsg}
+        onClose={() => setShowMsg(false)}
+      />
+      {error && <p className="text-red-500 mt-4">{error}</p>}
+      
+      {result && (
+        <div className="mt-6">
+          <Overview
+            Symbol={result.overview.Symbol}
+            OfficialSite={result.overview.OfficialSite}
+            Name={result.overview.Name}
+            Description={result.overview.Description}
+          />
+          <h2 className="text-xl font-semibold mb-2 mt-5">
+            {result.earnings
+              ? Object.keys(result.earnings)[1]
+                  .replace(/([A-Z])/g, " $1")
+                  .replace(/^./, (s) => s.toUpperCase())
+              : "Earnings"}
+          </h2>
+          <EarningsTable earnings={result.earnings.annualEarnings} />
         </div>
       )}
     </div>

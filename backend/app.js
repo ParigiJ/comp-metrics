@@ -35,6 +35,29 @@ app.get("/data/all/:symbol", async (req, res) => {
       ovRes.json(),
       erRes.json(),
     ]);
+
+    if (overview.Note || earnings.Note) {
+      const message = overview.Note || earnings.Note;
+      return res
+        .status(429)
+        .json({ error: "AlphaVantage rate limit exceeded", detail: message });
+    }
+
+    const noOverview =
+      !overview ||
+      Object.keys(overview).length === 0 ||
+      overview["Error Message"];
+
+    const noEarnings =
+      !earnings ||
+      !Array.isArray(earnings.annualEarnings) ||
+      earnings.annualEarnings.length === 0 ||
+      earnings["Error Message"];
+
+    if ((noOverview && noEarnings) || noOverview || noEarnings) {
+      return res.status(404).json({ error: `No data found for "${symbol}"` });
+    }
+
     res.json({ overview, earnings });
   } catch (err) {
     console.error("Error fetching data:", err);
