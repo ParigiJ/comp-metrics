@@ -45,7 +45,7 @@ export default function RequestCounter({ count, max = 25 }) {
           fontSize="0.75rem"
           fontWeight="600"
         >
-          {count}
+          {count}/25
         </text>
       </svg>
     </div>
