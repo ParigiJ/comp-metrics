@@ -32,7 +32,7 @@ function EarningsTable({ earnings = [] }) {
 
       <div className="flex items-center justify-between mt-2">
         <button
-          className="px-3 py-1 bg-blue-600 text-white rounded disabled:bg-gray-300"
+          className="px-3 py-1 bg-blue-600 text-white rounded disabled:bg-gray-300 hover:cursor-pointer disabled:hover:cursor-not-allowed"
           onClick={() => setPage((p) => Math.max(p - 1, 1))}
           disabled={page === 1}
         >
@@ -44,7 +44,7 @@ function EarningsTable({ earnings = [] }) {
         </span>
 
         <button
-          className="px-3 py-1 bg-blue-600 text-white rounded disabled:bg-gray-300"
+          className="px-3 py-1 bg-blue-600 text-white rounded disabled:bg-gray-300 hover:cursor-pointer disabled:hover:cursor-not-allowed"
           onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
           disabled={page === totalPages}
         >
