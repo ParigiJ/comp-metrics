@@ -1,0 +1,23 @@
+.
+├── backend
+│   ├── app.js
+│   ├── package.json
+│   └── yarn.lock
+├── eslint.config.js
+├── fs.txt
+├── index.html
+├── package.json
+├── public
+├── README.md
+├── src
+│   ├── App.jsx
+│   ├── Components
+│   │   └── MessageDialog.jsx
+│   ├── EarningsTable.jsx
+│   ├── index.css
+│   ├── main.jsx
+│   └── Overview.jsx
+├── vite.config.js
+└── yarn.lock
+
+5 directories, 16 files
