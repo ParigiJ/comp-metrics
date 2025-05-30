@@ -26,9 +26,7 @@ app.get("/data/all/:symbol", async (req, res) => {
       fetch(`${baseUrl}?function=EARNINGS&symbol=${symbol}&apikey=${apiKey}`),
     ]);
     if (!ovRes.ok || !erRes.ok) {
-      return res.status(502).json({
-        error: `Error fetching data from one of the APIs`,
-      });
+      return res.status(502).json({ error: "Bad gateway" });
     }
 
     const [overview, earnings] = await Promise.all([
@@ -36,31 +34,28 @@ app.get("/data/all/:symbol", async (req, res) => {
       erRes.json(),
     ]);
 
-    if (overview.Note || earnings.Note) {
-      const message = overview.Note || earnings.Note;
-      return res
-        .status(429)
-        .json({ error: "AlphaVantage rate limit exceeded", detail: message });
+    const rateLimitMsg = overview.Note || earnings.Note;
+    if (rateLimitMsg) {
+      return res.status(429).json({ error: rateLimitMsg });
     }
 
-    const noOverview =
+    const missingOverview =
       !overview ||
       Object.keys(overview).length === 0 ||
       overview["Error Message"];
-
-    const noEarnings =
+    const missingEarnings =
       !earnings ||
       !Array.isArray(earnings.annualEarnings) ||
       earnings.annualEarnings.length === 0 ||
       earnings["Error Message"];
 
-    if ((noOverview && noEarnings) || noOverview || noEarnings) {
+    if (missingOverview && missingEarnings) {
       return res.status(404).json({ error: `No data found for "${symbol}"` });
     }
 
     res.json({ overview, earnings });
   } catch (err) {
-    console.error("Error fetching data:", err);
+    console.error(err);
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
