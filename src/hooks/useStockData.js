@@ -7,6 +7,10 @@ export function useStockData() {
   const [fetchData, { data, error, isLoading }] = useLazyGetDataQuery();
 
   const load = (s) => {
+    if (!s.trim()) {
+      setSymbol("");
+      return setStoredResult(null);
+    }
     setSymbol(s);
     fetchData(s.toUpperCase()).then((res) => {
       if (res.data) setStoredResult(res.data);

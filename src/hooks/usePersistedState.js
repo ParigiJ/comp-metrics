@@ -7,7 +7,6 @@ export function usePersistedState(key, defaultValue) {
       try {
         return JSON.parse(stored);
       } catch {
-        // not valid JSON—just return the raw string
         return stored;
       }
     }
@@ -16,10 +15,8 @@ export function usePersistedState(key, defaultValue) {
 
   useEffect(() => {
     try {
-      // try to stringify (objects, arrays)
       localStorage.setItem(key, JSON.stringify(state));
     } catch {
-      // fallback for strings or other primitives
       localStorage.setItem(key, String(state));
     }
   }, [key, state]);

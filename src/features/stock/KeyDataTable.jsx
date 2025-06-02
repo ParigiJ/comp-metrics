@@ -4,10 +4,14 @@ const KeyDataTable = ({ overview }) => {
     ["Name", overview.Name],
     ["Sector", overview.Sector],
     ["Industry", overview.Industry],
-    ["Market Cap", overview.MarketCapitalization],
+    [
+      "Market Cap",
+      "$" + Number(overview.MarketCapitalization).toLocaleString("en-US"),
+    ],
     ["P/E Ratio", overview.PERatio],
     ["Dividend Yield", overview.DividendYield],
   ];
+
   return (
     <table>
       <thead>
